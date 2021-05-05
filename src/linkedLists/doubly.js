@@ -2,10 +2,11 @@ class Node {
   constructor(value) {
     this.value = value;
     this.next = null;
+    this.prev = null;
   }
 }
 
-class SinglyLinkedList {
+class DoublyLinkedList {
   constructor(value) {
     this.head = new Node(value);
     this.tail = this.head;
@@ -16,6 +17,7 @@ class SinglyLinkedList {
   append(value) {
     const newNode = new Node(value);
 
+    newNode.prev = this.tail;
     this.tail.next = newNode;
     this.tail = newNode;
     this.length++;
@@ -26,6 +28,7 @@ class SinglyLinkedList {
   prepend(value) {
     const newNode = new Node(value);
 
+    this.head.prev = newNode;
     newNode.next = this.head;
     this.head = newNode;
 
@@ -42,15 +45,15 @@ class SinglyLinkedList {
     }
 
     let currentNode = this.head;
-    let previousNode;
 
     for (let i = 0; i < this.length; i++) {
       if (i === index) {
+        newNode.prev = currentNode.prev;
+        currentNode.prev.next = newNode;
+        currentNode.prev = newNode;
         newNode.next = currentNode;
-        previousNode.next = newNode;
         break;
       }
-      previousNode = currentNode;
       currentNode = currentNode.next;
     }
     this.length++;
@@ -69,16 +72,15 @@ class SinglyLinkedList {
     }
 
     let currentNode = this.head;
-    let previousNode;
     let removed;
 
     for (let i = 0; i < this.length; i++) {
       if (i === index) {
         removed = currentNode;
-        previousNode.next = currentNode.next;
+        currentNode.prev.next = currentNode.next;
+        currentNode.next.prev = currentNode.prev;
         return removed;
       }
-      previousNode = currentNode;
       currentNode = currentNode.next;
     }
     this.length--;
@@ -86,7 +88,4 @@ class SinglyLinkedList {
   }
 }
 
-module.exports = {
-  Node,
-  SinglyLinkedList,
-};
+module.exports = { DoublyLinkedList };
